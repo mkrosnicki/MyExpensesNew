@@ -1,4 +1,5 @@
 import 'package:MyExpensesNew/models/transaction.dart';
+import 'package:MyExpensesNew/widget/chart_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -8,7 +9,7 @@ class Chart extends StatelessWidget {
 
   Chart(this.recentTransactions);
 
-  List<Map<String, Object>>get groupedTransactionsValues {
+  List<Map<String, Object>> get groupedTransactionsValues {
     return List.generate(7, (index) {
       final weekDay = DateTime.now().subtract(Duration(days: index),);
 
@@ -17,12 +18,18 @@ class Chart extends StatelessWidget {
         var transactionDate = recentTransactions[i].date;
         if (transactionDate.day == weekDay.day &&
             transactionDate.month == weekDay.month &&
-            transactionDate.year == weekDay.month) {
+            transactionDate.year == weekDay.year) {
           totalSum += recentTransactions[i].amount;
         }
       }
 
-      return {'day': DateFormat.E(weekDay), 'amount': totalSum};
+      return {'day': DateFormat.E().format(weekDay).substring(0, 1), 'amount': totalSum};
+    });
+  }
+
+  double get maxSpending {
+    return groupedTransactionsValues.fold(0.0, (previousValue, element) {
+      return previousValue + element['amount'];
     });
   }
 
@@ -32,11 +39,9 @@ class Chart extends StatelessWidget {
       elevation: 6,
       margin: EdgeInsets.all(20),
       child: Row(
-        children: [
-          Row(),
-          Row(),
-          Row(),
-        ],
+        children: groupedTransactionsValues.map((data) {
+          return ChartBar(data['day'], data['amount'], (data['amount'] as double) / maxSpending);
+        }).toList(),
       ),
     );
   }
