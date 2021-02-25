@@ -2,10 +2,16 @@ import 'package:MyExpensesNew/widget/chart.dart';
 import 'package:MyExpensesNew/widget/new_transaction.dart';
 import 'package:MyExpensesNew/widget/transaction_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'models/transaction.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
   runApp(MyApp());
 }
 
