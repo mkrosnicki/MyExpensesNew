@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:MyExpensesNew/widget/chart.dart';
 import 'package:MyExpensesNew/widget/new_transaction.dart';
 import 'package:MyExpensesNew/widget/transaction_list.dart';
@@ -131,11 +133,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     final txListWidget = Container(
       height: (mediaQuery.size.height -
-          appBar.preferredSize.height -
-          mediaQuery.padding.top) *
+              appBar.preferredSize.height -
+              mediaQuery.padding.top) *
           0.7,
-      child:
-      TransactionList(_userTransactions, _deleteTransaction),
+      child: TransactionList(_userTransactions, _deleteTransaction),
     );
     return Scaffold(
       appBar: appBar,
@@ -144,45 +145,51 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if(isLandscapeMode) Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Show Chart'),
-                Switch(
-                  value: _showChart,
-                  onChanged: (val) {
-                    setState(() {
-                      _showChart = val;
-                    });
-                  },
-                ),
-              ],
-            ),
-            if (!isLandscapeMode) Container(
-              height: (mediaQuery.size.height -
-                  appBar.preferredSize.height -
-                  mediaQuery.padding.top) *
-                  0.3,
-              child: Chart(_recentTransactions),
-            ),
+            if (isLandscapeMode)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Show Chart'),
+                  Switch.adaptive(
+                    activeColor: Theme.of(context).accentColor,
+                    value: _showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        _showChart = val;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            if (!isLandscapeMode)
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.3,
+                child: Chart(_recentTransactions),
+              ),
             if (!isLandscapeMode) txListWidget,
-            if (isLandscapeMode) _showChart
-                ? Container(
-                    height: (mediaQuery.size.height -
-                            appBar.preferredSize.height -
-                            mediaQuery.padding.top) *
-                        0.7,
-                    child: Chart(_recentTransactions),
-                  )
-                : txListWidget,
+            if (isLandscapeMode)
+              _showChart
+                  ? Container(
+                      height: (mediaQuery.size.height -
+                              appBar.preferredSize.height -
+                              mediaQuery.padding.top) *
+                          0.7,
+                      child: Chart(_recentTransactions),
+                    )
+                  : txListWidget,
           ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _startAddNewTransaction(context),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _startAddNewTransaction(context),
+            ),
     );
   }
 }
